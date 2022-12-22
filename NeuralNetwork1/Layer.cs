@@ -21,7 +21,7 @@ namespace NeuralNetwork1
         }
         public Matrix goBack(Matrix output, double learningRat)
         {
-            return backCompute(output, learningRat); ;
+            return backCompute(output, learningRat);
         }
         protected virtual Matrix compute(Matrix input)
         {
@@ -38,7 +38,7 @@ namespace NeuralNetwork1
         public LinearLayer(int prevNCount, int nextNCount)
         {
             weights = new Matrix(prevNCount, nextNCount, -0.005, 0.005);
-            biases = new Matrix(1, nextNCount, 1); // вектор-строка
+            biases = new Matrix(1, nextNCount, 0); // вектор-строка ВАУ
         }
         protected override Matrix compute(Matrix input)
         {
@@ -49,11 +49,10 @@ namespace NeuralNetwork1
         protected override Matrix backCompute(Matrix output, double learningRat)
         {
             var temp = output * Matrix.transpose(weights);
-            //TODO понять
             Matrix dBiases = Matrix.rowSums(output);
             Matrix dWeights = Matrix.transpose(input) * output;
             weights -= dWeights * learningRat;
-            biases -= dBiases * learningRat; // по идее можно просто biases -= l * dB;
+            biases -= dBiases * learningRat;
             return temp;
         }
     }

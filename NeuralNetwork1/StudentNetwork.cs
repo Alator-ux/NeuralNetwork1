@@ -49,21 +49,21 @@ namespace NeuralNetwork1
         {
             int iters = 0;
             double error = double.PositiveInfinity;
-            while (error > acceptableError)
+            while (error > acceptableError && iters < 100)
             {
-                error = trainSample(sample, 1);
+                error = trainSample(sample);
                 ++iters;
             }
 
             return iters;
         }
-        private double trainSample(Sample sample, int totalCount)
+        private double trainSample(Sample sample)
         {
             var pred = Compute(sample.input);
             sample.ProcessPrediction(pred);
             var error = sample.error;
             double loss = sample.EstimatedError() / sample.Output.Length; // IS THIS
-            goBack((2.0 / sample.Output.Length / totalCount) * new Matrix(error));
+            goBack(new Matrix(error) * (2.0 / sample.Output.Length));
             return loss;
         }
         public override double TrainOnDataSet(SamplesSet samplesSet, int epochsCount, double acceptableError, bool parallel)
@@ -84,7 +84,7 @@ namespace NeuralNetwork1
                 error = 0.0;
                 for(int i = 0; i < samplesSet.Count; i++)
                 {
-                    error += trainSample(samplesSet[i], samplesSet.Count);
+                    error += trainSample(samplesSet[i]);
                 }
 #if DEBUG
                 errorsFile.WriteLine(error);
